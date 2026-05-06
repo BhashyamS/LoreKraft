@@ -24,7 +24,7 @@ st.set_page_config(
 
 TEXT_MODEL = "gemini-2.5-flash"
 # You can change this to a newer image model available in your AI Studio account.
-IMAGE_MODEL = "gemini-2.0-flash-preview-image-generation"
+IMAGE_MODEL = "imagen-4.0-generate-001"
 
 
 LOREKRAFT_SYSTEM_PROMPT = """
@@ -117,37 +117,29 @@ Create the next interactive RPG scene.
 
     return extract_json(response.text)
 
-
-def generate_image(client, visual_prompt: str) -> Optional[Image.Image]:
-    prompt = f"""
-Create a single cinematic fantasy comic-book panel for LoreKraft.
-
-Requirements:
-    Cinematic fantasy comic-book panel.
-    No text or speech bubbles.
-    Painterly fantasy RPG art.
-
-Scene:
-{visual_prompt}
-"""
-
+*/
+def generate_image(client, visual_prompt: str):
     try:
-        response = client.models.generate_content(
-            model=IMAGE_MODEL,
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                response_modalities=["TEXT", "IMAGE"]
+        response = client.models.generate_images(
+            model="imagen-4.0-generate-001",
+            prompt=f"""
+            Fantasy comic-book RPG scene.
+            No text, no captions, no speech bubbles.
+            Cinematic lighting, detailed fantasy art.
+
+            {visual_prompt}
+            """,
+            config=types.GenerateImagesConfig(
+                number_of_images=1,
             ),
         )
 
-        for part in response.candidates[0].content.parts:
-            if getattr(part, "inline_data", None):
-                image_bytes = part.inline_data.data
-                return Image.open(BytesIO(image_bytes))
-    except Exception as e:
-        st.warning(f"Image generation skipped: {e}")
+        image_bytes = response.generated_images[0].image.image_bytes
+        return Image.open(BytesIO(image_bytes))
 
-    return None
+    except Exception as e:
+        st.error(f"Image generation error: {e}")
+        return None
 
 
 def add_scene_to_history(scene: Dict, player_choice: str = ""):
