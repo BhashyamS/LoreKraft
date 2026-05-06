@@ -24,7 +24,7 @@ st.set_page_config(
 
 TEXT_MODEL = "gemini-2.5-flash"
 # You can change this to a newer image model available in your AI Studio account.
-IMAGE_MODEL = "gemini-2.5-flash-image"
+IMAGE_MODEL = "gemini-2.0-flash-preview-image-generation"
 
 
 LOREKRAFT_SYSTEM_PROMPT = """
@@ -123,10 +123,9 @@ def generate_image(client, visual_prompt: str) -> Optional[Image.Image]:
 Create a single cinematic fantasy comic-book panel for LoreKraft.
 
 Requirements:
-- No text, no captions, no speech bubbles.
-- Mystical forest / ancient map / tabletop RPG atmosphere when appropriate.
-- Dramatic lighting, painterly fantasy art, highly detailed.
-- Keep it PG-13.
+    Cinematic fantasy comic-book panel.
+    No text or speech bubbles.
+    Painterly fantasy RPG art.
 
 Scene:
 {visual_prompt}
