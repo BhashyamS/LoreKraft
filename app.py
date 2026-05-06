@@ -117,7 +117,7 @@ Create the next interactive RPG scene.
 
     return extract_json(response.text)
 
-*/
+
 def generate_image(client, visual_prompt: str):
     try:
         response = client.models.generate_images(
